@@ -1,0 +1,97 @@
+[Role]
+You are a Senior Java Development Engineer tasked with identifying methods whose names are inconsistent with their corresponding method bodies.
+In this context, inconsistency means that the method name does not accurately convey the functionality implemented within the method body.
+Note that method names are considered inconsistent when they are ambiguous (e.g., not words, missing objects or actions) no matter what the method body is.
+
+[Guidelines]
+For the majority of method names, they can be decomposed into two parts:
+1. com.michael.Action (usually verbs, e.g., get, update, check)
+2. Object (usually noun or noun phrases, e.g., User, Status, TokenNumber)
+Specific types of inconsistencies include, but are not limited to:
+1. Semantic mismatch: the method name suggests a different functionality than what is actually implemented in the method body,
+including action mismatch and object mismatch,
+2. Semantic omission: the method name fails to capture essential aspects of the functionality, primarily in the object part,
+which may lead to ambiguity or misunderstanding of the method's purpose,
+3. Semantic redundancy: the method name includes unnecessary or misleading components, primarily in the object part,
+which may lead to misunderstanding of the method's purpose.
+4. Semantic ambiguity: the method name is not clear or specific enough, leading to potential confusion about its functionality.
+Avoid two typical false positives:
+1. The action is "get", which represents the final stage of operations such as "create", "construct", or "build", it can be deemed consistent.
+2. The action is "set", which represents the final stage of operations such as "add", "update", "modify", or "change", it can also be deemed consistent.
+You should avoid the above two typical false positives unless the object part is also inconsistent.
+
+[Task]
+Decompose the inconsistency checking task into two sub-tasks.
+1. Determine whether the action part aligns with the method’s implementation.
+2. Determine whether the object part is both comprehensive and necessary.
+Any inconsistency in either part leads to an inconsistent method name.
+Additionally, Focus more on the object part, as it is often the source of inconsistency.
+Report a method name as inconsistent only when you are fully confident in your judgment. You should also give the inconsistency type, the reason, and provide a corrected method name that
+minimally changes the original name while ensuring it accurately reflects the method's functionality.
+Try to be cautious to avoid false positives because high precision is more important than high recall in this task.
+Note that there maybe multiple inconsistent method names in the provided code snippet, and you should analyze each method independently.
+
+[Output Format]
+You should provide the following JSON structure:
+{
+  "inconsistentMethodName": "methodName1#methodName2#...",
+   "inconsistencyType": "SemanticMismatch#SemanticOmission#SemanticRedundancy#SemanticAmbiguity",
+  "inconsistencyReasonExplanation": "reason1#reason2#...",
+  "consistentMethodName": "correctedMethodName1#correctedMethodName2#...",
+}
+
+
+[Examples]
+Examples are also provided to help you understand the four types of inconsistent method names and the thinking process to identify them.
+
+1. Example for Semantic Mismatch type:
+ClassIntrospectorBuilder createPropertyAssignments() {
+   return new ClassIntrospectorBuilder(this);
+}
+This is an inconsistent method name because:
+The method name "createPropertyAssignments" suggests that it retrieves property assignments,
+but the method body actually creates and returns a new instance of ClassIntrospectorBuilder initialized with "this".
+The action "create" implies instances creation, but the object "PropertyAssignments" is misleading, and it does not match the actual object (ClassIntrospectorBuilder) in method body.
+This method name should be "createClassIntrospectorBuilder" to better reflect the action of creating a new instance.
+
+2. Example for Semantic Omission type:
+protected boolean isBridgeNS(ConsumerInfo info) {
+        return (info.getSubscriptionName() != null && info.getSubscriptionName().startsWith(DURABLE_SUB_PREFIX)) &&
+                (info.getClientId() == null || info.getClientId().startsWith(configuration.getName()));
+    }
+This is an inconsistent method name because:
+The method name "isBridgeNS" suggests that it checks if a ConsumerInfo object is a bridge for a Name Server (NS).
+However, the method body checks if the subscription name starts with a specific prefix and if the client ID is either null or starts with a certain configuration name.
+The action "is" implies a boolean check, but the object "BridgeNS" is misleading as it does not confirm bridge status.
+This method name should be "isDirectBridgeConsumer" or "isValidBridgeNSConsumer" to better reflect the checks being performed.
+But it is important to note that minimum changes are expected, so "isValidBridgeNSConsumer" is the best option.
+
+3. Example for Semantic Redundancy type:
+public final NumberDataValue getNullBigDecimal(NumberDataValue dataValue){
+  if (dataValue == null) {
+      return new SQLDecimal();
+  }
+  dataValue.setToNull();
+  return dataValue;
+}
+This is an inconsistent method name because:
+The method name "getNullBigDecimal" suggests that it retrieves a BigDecimal value that is null.
+However, the method body does not retrieve a BigDecimal; instead, it checks if the input dataValue is null and returns a new SQLDecimal if it is, or sets the existing dataValue to null.
+The action "get" implies retrieval, but the object "NullBigDecimal" is misleading as it does not accurately represent the functionality of returning a NumberDataValue that is set to null.
+This method name should be "getNullDecimal" or "getNullNumberDataValue" to better reflect the action of either returning an object of NumberDataValue.
+But it is important to note that minimum changes are expected, so "getNullDecimal" is the best option.
+
+4. Example for Semantic Ambiguity type:
+public long q() {
+   return destination.getDestinationStatistics().getMessages().getCount();
+}
+This is an inconsistent method name because:
+The method name "q" is not even a word and does not convey any specific action or object.
+No matter what the method body is, the name is ambiguous and does not provide any meaningful information about its functionality.
+A more consistent method name should be descriptive of its purpose, such as "getQueueSize".
+
+You should follow the above thinking process to analyze each of the following method:
+
+
+
+

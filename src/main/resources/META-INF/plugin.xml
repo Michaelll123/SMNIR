@@ -1,0 +1,119 @@
+<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<idea-plugin>
+    <!-- Unique identifier of the plugin. It should be FQN. It cannot be changed between the plugin versions. -->
+    <id>com.michael.MethodNameConsistencyChecking.SMNIR</id>
+
+    <!-- Public plugin name should be written in Title Case.
+         Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-name -->
+    <name>SMNIR</name>
+
+    <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
+    <vendor email="253590282@qq.com" >michael</vendor>
+
+    <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
+         Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
+         Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
+    <description>
+        <![CDATA[
+             <div class="container">
+        <h1>SMNIR: Smart Method Name Inconsistency Resolver</h1>
+        <p class="subtitle">Your AI Code Reviewer, Automatically Detecting and Fixing Misleading Method Names</p>
+
+        <h3>Summary</h3>
+        <p>
+            Have you ever been misled by a method name that seems harmless but does something entirely different? <strong>SMNIR (Smart Method Name Inconsistency Resolver)</strong> is an intelligent plugin powered by Large Language Models (LLMs) designed to tackle one of the most subtle yet pervasive problems in software development: <strong>method name-body inconsistency</strong>. SMNIR automatically detects methods whose names don't match their functionality and provides high-quality renaming suggestions, enhancing code readability, maintainability, and preventing potential bugs at their source.
+        </p>
+
+        <h3>The Pain Point: The Silent Killer in Your Codebase</h3>
+        <p>
+            Due to collaborative style conflicts, improper code cloning, or simple oversight, inaccurate method names are rampant in codebases. This isn't just a matter of style; it's a critical form of technical debt:
+        </p>
+        <ul>
+            <li><strong>Causes Misunderstanding:</strong> A method named <code>getUser()</code> that actually deletes a user can create immense confusion for anyone reading the code.</li>
+            <li><strong>Leads to Bugs:</strong> Developers might misuse a method due to misunderstanding its purpose, introducing hard-to-trace software defects.</li>
+            <li><strong>Hinders Maintenance:</strong> When the "documentation" of the code (the method name) contradicts its actual behavior, maintenance costs skyrocket.</li>
+            <li><strong>Impacts the Ecosystem:</strong> Inconsistent naming can have a negative ripple effect on dependent applications and libraries.</li>
+        </ul>
+
+        <h3>The Dilemma of Existing Solutions</h3>
+        <p>
+            While academic research has explored deep learning-based solutions, they primarily perform well in "laboratory settings" on artificially balanced datasets. However, in real-world projects, the vast majority of method names are correct, making inconsistencies a rare occurrence. This <strong>extreme class imbalance</strong> renders existing models nearly unusable in practice. To make matters worse, mainstream IDEs still lack automated support for identifying and fixing such issues.
+        </p>
+
+        <h3>The SMNIR Solution: LLM + Custom Prompt Engineering</h3>
+        <p>
+            SMNIR takes a different path, moving beyond traditional model training. We leverage the powerful code understanding and generation capabilities of Large Language Models (LLMs) and pair them with a suite of <strong>custom-designed prompts</strong>.
+        </p>
+        <p>
+            This carefully crafted prompt engineering guides the LLM to <strong>think like a senior developer</strong>: first, it summarizes the core functionality of the method body; next, it evaluates whether the current name accurately reflects that functionality; and finally, if an inconsistency is found, it generates a more fitting new name. This approach cleverly transforms a difficult "classification problem" into an "understanding and generation problem," which is a natural strength of LLMs, ensuring high accuracy even in real-world imbalanced scenarios.
+        </p>
+
+        <h3>Core Features</h3>
+        <ul class="emoji-list">
+            <li class="detect"><strong>Intelligent Inconsistency Detection:</strong> Automatically scans your code to precisely identify methods where the name mismatches the implementation logic, highlighting them for review.</li>
+            <li class="rename"><strong>AI-Powered Renaming Suggestions:</strong> For each detected inconsistency, SMNIR generates high-quality, context-aware naming suggestions based on a deep understanding of the method body.</li>
+            <li class="integration"><strong>Seamless IDE Integration:</strong> As an IntelliJ IDEA plugin, SMNIR integrates perfectly into your development workflow. Trigger analysis and refactoring with a simple shortcut or right-click.</li>
+            <li class="engine"><strong>Powered by Advanced Tech:</strong> Fuses cutting-edge Large Language Models (LLMs) with innovative Prompt Engineering to guarantee the quality of both detection and suggestions.</li>
+        </ul>
+
+        <h3>Getting Started</h3>
+        <ol>
+            <li>Install SMNIR from the JetBrains Marketplace.</li>
+            <li>Configure your LLM API key in the settings.</li>
+            <li>Open your code file. Trigger it via the Refactor | Analyze Method Names with SMNIR.</li>
+            <li>SMNIR's analysis and renaming suggestions for any detected methods will be presented in a table panel which can be found in the bottom sidebar.</li>
+            <li>Accept the change with a single click to the inconsistent method name in first column and then the rename suggestions in last column.</li>
+            <li>Feel free to make changes to the suggested names, and then click inconsistent method name in first column to ascertain the method name you intent to change.</li>
+        </ol>
+
+        <p><strong>Stop getting lost in confusing code. Let SMNIR be the guardian of your code quality and start writing clear, consistent, and trustworthy code today!</strong></p>
+    </div>
+        ]]>
+    </description>
+
+
+    <change-notes><![CDATA[
+        <h3>Version 1.0.0</h3>
+        <ul>
+            <li>Initialization.</li>
+            <li>Add description.</li>
+        </ul>
+    ]]></change-notes>
+
+    <idea-version since-build="222" until-build="241.*" />
+    <!-- Product and plugin compatibility requirements.
+         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.lang</depends>
+    <depends>com.intellij.modules.java</depends>
+    <depends>com.intellij.java</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- 注册状态管理服务 -->
+        <applicationService
+                serviceImplementation="com.michael.Service.MyPluginSettingsState"/>
+        <applicationConfigurable groupId="tools" displayName="SMNIR AI Settings"
+                                 instance="com.michael.Service.MyPluginSettingsConfigurable" />
+    </extensions>
+    <!-- Extension points defined by the plugin.
+         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
+    <extensions defaultExtensionNs="com.intellij">
+        <toolWindow canCloseContents="true" id="Inconsistent Method List" anchor="bottom" factoryClass="com.michael.Action.SmellListToolWindow">
+        </toolWindow>
+    </extensions>
+
+    <extensions defaultExtensionNs="com.intellij">
+
+    </extensions>
+    <actions>
+        <action id="MCCAction"
+                class="com.michael.Action.MCCAction"
+                text="Analyze Method Names with SMNIR"
+                description="Check the consistency of method names and bodies in the current file">
+            <!-- 关键：添加到RefactoringMenu组 -->
+            <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt A"/>
+            <add-to-group group-id="RefactoringMenu" anchor="last"/>
+        </action>
+    </actions>
+
+</idea-plugin>
